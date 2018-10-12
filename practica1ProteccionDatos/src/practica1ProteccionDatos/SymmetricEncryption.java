@@ -19,7 +19,8 @@ public class SymmetricEncryption {
 	final String ALGORITHM = "AES";
 	final String MODE_OF_OPERATION = "AES/ECB/NoPadding";
 
-	Cipher aesEnc, aesDec;
+	static Cipher aesEnc;
+	Cipher aesDec;
 	SecretKeySpec key;
 
     /*************************************************************************************/
@@ -51,7 +52,7 @@ public class SymmetricEncryption {
     /*************************************************************************************/
 	/* Method to encrypt 1 block of plaintext using AES */
     /*************************************************************************************/
-	public byte[] encryptBlock(byte[] input) throws IllegalBlockSizeException, BadPaddingException {
+	public static byte[] encryptBlock(byte[] input) throws IllegalBlockSizeException, BadPaddingException {
 
 		return aesEnc.doFinal(input);
 	}

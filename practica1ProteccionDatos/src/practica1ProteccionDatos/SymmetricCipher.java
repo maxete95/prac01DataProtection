@@ -5,16 +5,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+
 import javax.crypto.*;
 import java.security.InvalidKeyException;
 
 public class SymmetricCipher {
 
 	byte[] byteKey;
-	SymmetricEncryption s;
-	SymmetricEncryption d;
+	static SymmetricEncryption s;
+	static SymmetricEncryption d;
 	
-	// Initialization Vector (fixed)
+	static // Initialization Vector (fixed)
 	
 	byte[] iv = new byte[] { (byte)49, (byte)50, (byte)51, (byte)52, (byte)53, (byte)54, 
 		(byte)55, (byte)56, (byte)57, (byte)48, (byte)49, (byte)50, (byte)51, (byte)52,
@@ -24,22 +26,63 @@ public class SymmetricCipher {
 	/* Constructor method */
     /*************************************************************************************/
 	public void SymmetricCipher() {
+		
+		
 	}
 
     /*************************************************************************************/
 	/* Method to encrypt using AES/CBC/PKCS5 */
     /*************************************************************************************/
-	public byte[] encryptCBC (byte[] input, byte[] byteKey) throws Exception {
-		
-		byte[] ciphertext = null;	
+	public static byte[] encryptCBC (byte[] input, byte[] byteKey) throws Exception {
 		
 		
-			// Generate the plaintext with padding
-			
-			
+		s = new SymmetricEncryption(byteKey);
+		int modulus = 16 - input.length % s.AES_BLOCK_SIZE;
+		
+		byte [] temp = new byte [input.length + modulus];
+		byte [] tempFinal = new byte [s.AES_BLOCK_SIZE];
+
+		byte[] ciphertext = new byte[input.length + modulus];
+		byte[] ciphertextFinal = new byte[input.length + modulus];
+
+		int i = 0;
 	
+		System.arraycopy(input, 0, temp, 0, input.length);
+				
+			// Generate the plaintext with padding
+		
+		if (modulus == 0) {
+			System.out.println("bloques enteros");
+		} else {
+			
+			for ( int j = 0; j < modulus ; j++) {
+				temp[input.length + j] = (byte) modulus;
+			}
+
+		}
+			
+			// temp[input.length] = (byte) x;	}
 			// Generate the ciphertext
 			
+		for (i = 0; i < temp.length; i += 16) {
+				
+				if (i == 0) {
+					for (int j = 0; j < 16 ; j++) {
+
+						ciphertext[i] = (byte) (iv[j] ^ temp[i]);
+						//cifrado
+						tempFinal = SymmetricEncryption.encryptBlock(Arrays.copyOfRange(ciphertext, i, i+16));
+						System.arraycopy(tempFinal, 0, ciphertextFinal, i, tempFinal.length);
+
+					}
+				}
+				else {
+					
+					ciphertext[i] = (byte) (ciphertext[i - 16] ^ temp[i]);
+					//cifrado
+			}
+		}
+		
 		
 		
 		return ciphertext;
@@ -50,19 +93,29 @@ public class SymmetricCipher {
     /*************************************************************************************/
 	
 	
-	public byte[] decryptCBC (byte[] input, byte[] byteKey) throws Exception {
+	public static byte[] decryptCBC (byte[] input, byte[] byteKey) throws Exception {
 	
 		
-		byte [] finalplaintext = null;
+		byte[] finalplaintext = new byte [input.length];	
+		int i = 0;
 		
+		d = new SymmetricEncryption(byteKey);
+		
+		finalplaintext = d.decryptBlock(finalplaintext);
+		
+			// Generate the plaintext with padding
+				
+			// Generate the ciphertext
 			
-		// Generate the plaintext
+		for ( i = 0; i < input.length; i += 16) {
 			
+			for (int j = 0; j < 16; j++) {
+				finalplaintext[i] = (byte) (iv[j] ^ input[i]);
+			}
+		}
 		
-		// Eliminate the padding
 		
-			
-		
+
 		return finalplaintext;
 	}
 	
