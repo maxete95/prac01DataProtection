@@ -68,31 +68,24 @@ public class SymmetricCipher {
 				if (i == 0) {
 					for (int j = 0; j < 16 ; j++) {
 
-						ciphertext[i] = (byte) (iv[j] ^ temp[i]);
+						ciphertext[i + j] = (byte) (iv[j] ^ temp[i + j]);
 						//cifrado
-						System.out.println(ciphertext.length);
-						tempFinal = SymmetricEncryption.encryptBlock(Arrays.copyOfRange(ciphertext, i, i+16));
-						System.out.println(tempFinal.length);
-						System.arraycopy(tempFinal, 0, ciphertextFinal, i, tempFinal.length);
-						System.out.println(ciphertextFinal.length);
 
+						tempFinal = SymmetricEncryption.encryptBlock(Arrays.copyOfRange(ciphertext, i, i+16));
+						System.arraycopy(tempFinal, 0, ciphertextFinal, i, tempFinal.length);
 					}
 				}
 				else {
-					
-					ciphertext[i] = (byte) (ciphertext[i - 16] ^ temp[i]);
-					//cifrado
-					System.out.println(ciphertext.length);
-					tempFinal = SymmetricEncryption.encryptBlock(Arrays.copyOfRange(ciphertext, i, i+16));
-					System.out.println(tempFinal.length);
-					System.arraycopy(tempFinal, 0, ciphertextFinal, i, tempFinal.length);
-					System.out.println(ciphertextFinal.length);
-
+					for (int j = 0; j < 16 ; j++) {
+						ciphertext[i + j] = (byte) (ciphertext[i - 16 + j] ^ temp[i + j]);
+						tempFinal = SymmetricEncryption.encryptBlock(Arrays.copyOfRange(ciphertext, i, i+16));
+						System.arraycopy(tempFinal, 0, ciphertextFinal, i, tempFinal.length);
+					}
 			}
 		}
 		
 		
-		System.out.println("ciphertextFinal:" + ciphertextFinal.length);
+//		System.out.println("ciphertextFinal:" + ciphertextFinal.length);
 
 		return ciphertextFinal;
 	}
@@ -106,14 +99,33 @@ public class SymmetricCipher {
 	
 		
 		byte[] decryptedtext = new byte [input.length];	
+		byte [] temp = new byte [input.length];
+
 		int i = 0;
 		
 		d = new SymmetricEncryption(byteKey);
 		
-		decryptedtext = d.decryptBlock(decryptedtext);
+		decryptedtext = d.decryptBlock(input);
+			
 		
+		for (i = 0; i < decryptedtext.length; i += 16) {
+			
+			if (i == 0) {
+				for (int j = 0; j < 16 ; j++) {
 
-		return null;
+					temp[i + j] = (byte) (iv[j] ^ decryptedtext[i + j]);
+
+				}
+			}
+			else {
+				for (int j = 0; j < 16 ; j++) {
+					temp[i + j] = (byte) (decryptedtext[i - 16 + j] ^ temp[i + j]);
+				}
+
+		}
+	}
+
+		return temp;
 	}
 	
 }

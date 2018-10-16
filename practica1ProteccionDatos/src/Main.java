@@ -27,7 +27,9 @@ public class Main {
     	
     	//String s = new String (SymmetricCipher.encryptCBC(mensaje.getBytes(), key.getBytes()));
     	
-    	//String d = new String(SymmetricCipher.decryptCBC(s.getBytes(), key.getBytes()));
+    	String d = new String(SymmetricCipher.decryptCBC(bytess, key.getBytes()));
+    	
+    	System.out.println(d);
     	
 /*        System.out.println(s.length());
         System.out.println(s);*/
