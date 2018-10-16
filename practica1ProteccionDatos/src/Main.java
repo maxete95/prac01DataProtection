@@ -6,6 +6,7 @@ public class Main {
     public static void main (String [ ] args) throws Exception {
 
     	String mensaje = new String();
+    	byte [] bytess = new byte[48];
     	String key = new String();
     	
     	for (int i = 0; i < 40; i++) {
@@ -17,14 +18,19 @@ public class Main {
     		key = key + 'b';
     	}
     	
+    	bytess = SymmetricCipher.encryptCBC(mensaje.getBytes(), key.getBytes());
 
+    	System.out.println(bytess.length);
     	
-    	String s = new String (SymmetricCipher.encryptCBC(mensaje.getBytes(), key.getBytes()));
+    	String s = new String (bytess);
+    	System.out.println(s.length());
+    	
+    	//String s = new String (SymmetricCipher.encryptCBC(mensaje.getBytes(), key.getBytes()));
     	
     	//String d = new String(SymmetricCipher.decryptCBC(s.getBytes(), key.getBytes()));
     	
-        System.out.println(s.length());
-        //System.out.println(d);
+/*        System.out.println(s.length());
+        System.out.println(s);*/
 
     } 
 

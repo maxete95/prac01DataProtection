@@ -61,7 +61,6 @@ public class SymmetricCipher {
 
 		}
 			
-			// temp[input.length] = (byte) x;	}
 			// Generate the ciphertext
 			
 		for (i = 0; i < temp.length; i += 16) {
@@ -71,8 +70,11 @@ public class SymmetricCipher {
 
 						ciphertext[i] = (byte) (iv[j] ^ temp[i]);
 						//cifrado
+						System.out.println(ciphertext.length);
 						tempFinal = SymmetricEncryption.encryptBlock(Arrays.copyOfRange(ciphertext, i, i+16));
+						System.out.println(tempFinal.length);
 						System.arraycopy(tempFinal, 0, ciphertextFinal, i, tempFinal.length);
+						System.out.println(ciphertextFinal.length);
 
 					}
 				}
@@ -80,12 +82,19 @@ public class SymmetricCipher {
 					
 					ciphertext[i] = (byte) (ciphertext[i - 16] ^ temp[i]);
 					//cifrado
+					System.out.println(ciphertext.length);
+					tempFinal = SymmetricEncryption.encryptBlock(Arrays.copyOfRange(ciphertext, i, i+16));
+					System.out.println(tempFinal.length);
+					System.arraycopy(tempFinal, 0, ciphertextFinal, i, tempFinal.length);
+					System.out.println(ciphertextFinal.length);
+
 			}
 		}
 		
 		
-		
-		return ciphertext;
+		System.out.println("ciphertextFinal:" + ciphertextFinal.length);
+
+		return ciphertextFinal;
 	}
 	
 	/*************************************************************************************/
@@ -96,27 +105,15 @@ public class SymmetricCipher {
 	public static byte[] decryptCBC (byte[] input, byte[] byteKey) throws Exception {
 	
 		
-		byte[] finalplaintext = new byte [input.length];	
+		byte[] decryptedtext = new byte [input.length];	
 		int i = 0;
 		
 		d = new SymmetricEncryption(byteKey);
 		
-		finalplaintext = d.decryptBlock(finalplaintext);
-		
-			// Generate the plaintext with padding
-				
-			// Generate the ciphertext
-			
-		for ( i = 0; i < input.length; i += 16) {
-			
-			for (int j = 0; j < 16; j++) {
-				finalplaintext[i] = (byte) (iv[j] ^ input[i]);
-			}
-		}
-		
+		decryptedtext = d.decryptBlock(decryptedtext);
 		
 
-		return finalplaintext;
+		return null;
 	}
 	
 }
