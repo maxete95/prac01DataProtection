@@ -1,5 +1,6 @@
 
 import practica1ProteccionDatos.SymmetricCipher;
+import practica1ProteccionDatos.SymmetricEncryption;
 
 public class Main {
 
@@ -9,7 +10,7 @@ public class Main {
     	byte [] bytess = new byte[48];
     	String key = new String();
     	
-    	for (int i = 0; i < 40; i++) {
+    	for (int i = 0; i < 34; i++) {
     		
     		mensaje = mensaje + 'a';
     	}
@@ -18,6 +19,7 @@ public class Main {
     		key = key + 'b';
     	}
     	
+
     	bytess = SymmetricCipher.encryptCBC(mensaje.getBytes(), key.getBytes());
 
     	System.out.println(bytess.length);

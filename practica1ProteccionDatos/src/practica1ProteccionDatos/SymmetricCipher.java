@@ -29,7 +29,7 @@ public class SymmetricCipher {
 		
 		
 	}
-
+	
     /*************************************************************************************/
 	/* Method to encrypt using AES/CBC/PKCS5 */
     /*************************************************************************************/
@@ -39,11 +39,11 @@ public class SymmetricCipher {
 		s = new SymmetricEncryption(byteKey);
 		int modulus = 16 - input.length % s.AES_BLOCK_SIZE;
 		
-		byte [] temp = new byte [input.length + modulus];
+		byte [] temp = new byte [input.length + modulus + s.AES_BLOCK_SIZE];
 		byte [] tempFinal = new byte [s.AES_BLOCK_SIZE];
 
-		byte[] ciphertext = new byte[input.length + modulus];
-		byte[] ciphertextFinal = new byte[input.length + modulus];
+		byte[] ciphertext = new byte[input.length + modulus + s.AES_BLOCK_SIZE];
+		byte[] ciphertextFinal = new byte[input.length + modulus + s.AES_BLOCK_SIZE];
 
 		int i = 0;
 	
@@ -59,6 +59,9 @@ public class SymmetricCipher {
 				temp[input.length + j] = (byte) modulus;
 			}
 
+		}
+		for ( int j = 0; j < s.AES_BLOCK_SIZE ; j++) {
+			temp[input.length + modulus + j] = (byte) modulus;
 		}
 			
 			// Generate the ciphertext
@@ -85,8 +88,6 @@ public class SymmetricCipher {
 		}
 		
 		
-//		System.out.println("ciphertextFinal:" + ciphertextFinal.length);
-
 		return ciphertextFinal;
 	}
 	
@@ -124,6 +125,7 @@ public class SymmetricCipher {
 
 		}
 	}
+		//quitar el padding
 
 		return temp;
 	}
