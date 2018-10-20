@@ -101,7 +101,6 @@ public class SymmetricCipher {
 		
 		byte[] decryptedtext = new byte [input.length];	
 		byte [] temp = new byte [input.length];
-
 		int i = 0;
 		
 		d = new SymmetricEncryption(byteKey);
@@ -122,13 +121,20 @@ public class SymmetricCipher {
 				for (int j = 0; j < 16 ; j++) {
 					temp[i + j] = (byte) (decryptedtext[i - 16 + j] ^ temp[i + j]);
 				}
-
 		}
-	}
-		//quitar el padding
+	}		
 
-		return temp;
+
+		//quitar el padding
+		byte[] finaltext = new byte [temp.length - 16];
+		finaltext = Arrays.copyOfRange(temp, 0, temp.length - 16);
+
+		return finaltext;
 	}
 	
+	  public static String byteToHex(byte b) {
+		    int i = b & 0xFF;
+		    return Integer.toHexString(i);
+		  }
 }
 
