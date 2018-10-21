@@ -66,22 +66,20 @@ public class SymmetricCipher {
 			
 			// Generate the ciphertext
 			
-		for (i = 0; i < temp.length; i += 16) {
+		for (i = 0; i < temp.length; i += s.AES_BLOCK_SIZE) {
 				
 				if (i == 0) {
-					for (int j = 0; j < 16 ; j++) {
+					for (int j = 0; j < s.AES_BLOCK_SIZE ; j++) {
 
 						ciphertext[i + j] = (byte) (iv[j] ^ temp[i + j]);
-						//cifrado
-
-						tempFinal = SymmetricEncryption.encryptBlock(Arrays.copyOfRange(ciphertext, i, i+16));
+						tempFinal = SymmetricEncryption.encryptBlock(Arrays.copyOfRange(ciphertext, i, i + s.AES_BLOCK_SIZE));
 						System.arraycopy(tempFinal, 0, ciphertextFinal, i, tempFinal.length);
 					}
 				}
 				else {
-					for (int j = 0; j < 16 ; j++) {
-						ciphertext[i + j] = (byte) (ciphertext[i - 16 + j] ^ temp[i + j]);
-						tempFinal = SymmetricEncryption.encryptBlock(Arrays.copyOfRange(ciphertext, i, i+16));
+					for (int j = 0; j < s.AES_BLOCK_SIZE ; j++) {
+						ciphertext[i + j] = (byte) (ciphertext[i - s.AES_BLOCK_SIZE + j] ^ temp[i + j]);
+						tempFinal = SymmetricEncryption.encryptBlock(Arrays.copyOfRange(ciphertext, i, i + s.AES_BLOCK_SIZE));
 						System.arraycopy(tempFinal, 0, ciphertextFinal, i, tempFinal.length);
 					}
 			}
@@ -98,43 +96,45 @@ public class SymmetricCipher {
 	
 	public static byte[] decryptCBC (byte[] input, byte[] byteKey) throws Exception {
 	
-		
-		byte[] decryptedtext = new byte [input.length];	
+		d = new SymmetricEncryption(byteKey);
+
+		byte[] decryptedtext = new byte [d.AES_BLOCK_SIZE];	
 		byte [] temp = new byte [input.length];
+		
 		int i = 0;
 		
-		d = new SymmetricEncryption(byteKey);
 		
-		decryptedtext = d.decryptBlock(input);
+		//decryptedtext = d.decryptBlock(input);
 			
-		
-		for (i = 0; i < decryptedtext.length; i += 16) {
+		//decrypt text
+		for (i = 0; i < input.length; i += d.AES_BLOCK_SIZE) {
 			
 			if (i == 0) {
-				for (int j = 0; j < 16 ; j++) {
+				for (int j = 0; j < d.AES_BLOCK_SIZE ; j++) {
+					
+					decryptedtext = SymmetricEncryption.decryptBlock(Arrays.copyOfRange(input, i, i + d.AES_BLOCK_SIZE));
 
-					temp[i + j] = (byte) (iv[j] ^ decryptedtext[i + j]);
+
+					temp[i + j] = (byte) (iv[j] ^ decryptedtext[j]);
 
 				}
 			}
 			else {
-				for (int j = 0; j < 16 ; j++) {
-					temp[i + j] = (byte) (decryptedtext[i - 16 + j] ^ temp[i + j]);
+				for (int j = 0; j < d.AES_BLOCK_SIZE ; j++) {
+					decryptedtext = SymmetricEncryption.decryptBlock(Arrays.copyOfRange(input, i, i + d.AES_BLOCK_SIZE));
+
+					temp[i + j] = (byte) (decryptedtext[j] ^ temp[i + j - d.AES_BLOCK_SIZE]);
 				}
 		}
 	}		
 
 
-		//quitar el padding
-		byte[] finaltext = new byte [temp.length - 16];
-		finaltext = Arrays.copyOfRange(temp, 0, temp.length - 16);
+		//remove padding
+		byte[] finaltext = new byte [temp.length - d.AES_BLOCK_SIZE];
+		finaltext = Arrays.copyOfRange(temp, 0, temp.length - d.AES_BLOCK_SIZE);
 
 		return finaltext;
 	}
 	
-	  public static String byteToHex(byte b) {
-		    int i = b & 0xFF;
-		    return Integer.toHexString(i);
-		  }
 }
 
